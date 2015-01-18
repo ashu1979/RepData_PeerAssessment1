@@ -11,7 +11,9 @@ Unzip the activity.zip file and load the data in R object named activity. As fil
 
 
 ```r
+## load required library
 library(ggplot2)
+## Unzip and load activity
 unzip("activity.zip")
 activity <- read.csv("activity.csv", header = TRUE)
 ```
@@ -53,6 +55,7 @@ median(dailyactivity$steps)
 
 ```r
 intervalsteps <- aggregate(steps ~ interval, activity, mean)
+## Plot using ggplot2 library
 ggplot(intervalsteps, aes(x = interval, y=steps)) + geom_line() + ggtitle("Average steps - 5-minute interval")
 ```
 
@@ -95,7 +98,9 @@ I used the pre calculated mean for that 5-minute interval to fill the values.
 
 ```r
 newactivity <- merge(activity, intervalsteps, by = "interval", suffixes = c("", ".mean"))
+## replace NAs with mean value
 newactivity$steps[is.na(newactivity$steps)] <- newactivity$steps.mean[is.na(newactivity$steps)]
+## select only required columns
 newactivity <- newactivity[, c(1:3)]
 ```
 
@@ -160,6 +165,7 @@ For this part the weekdays() function may be of some help here. Use the dataset 
 Create a new factor variable in the dataset with two levels - "weekday" and "weekend" indicating whether a given date is a weekday or weekend day.
 
 ```r
+## function to define weekday and weekend based on day parameter value
 weekdaytype <- function(day)
   {
   if(weekdays(as.Date(day)) %in% c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday"))
@@ -171,6 +177,7 @@ weekdaytype <- function(day)
       "weekend"
     }
   }
+
 activity$weekdaytype <- as.factor(sapply(activity$date, weekdaytype))
 ```
 
